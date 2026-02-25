@@ -1,0 +1,43 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500&display=swap');
+
+/* Títulos Azules */
+.titulo-azul {
+  color: #1F3564;
+  font-weight: 700;
+  text-transform: uppercase;
+  margin-bottom: 0;
+}
+
+/* Subtítulos */
+.subtitulo-negro {
+  color: #000000;
+  font-size: 0.9rem;
+  display: block;
+}
+
+/* Descripciones Inter Gris */
+.descripcion-inter {
+  font-family: 'Inter', sans-serif;
+  color: #6c757d;
+  font-size: 0.95rem;
+  margin-bottom: 1rem;
+}
+
+/* Botón Azul Institucional */
+.btn-azul-inst {
+  background-color: #1F3564 !important;
+  border-color: #1F3564 !important;
+  color: white !important;
+  transition: all 0.3s ease;
+}
+
+.btn-azul-inst:hover {
+  background-color: #16264a !important;
+  transform: translateY(-2px);
+}
+
+/* Etiquetas en negrita */
+label.fw-bold {
+  font-size: 0.9rem;
+  color: #444;
+}

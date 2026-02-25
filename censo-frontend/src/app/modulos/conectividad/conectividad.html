@@ -1,0 +1,106 @@
+<div class="container mt-4 mb-5">
+  
+  <div class="progress mb-4" style="height: 25px;">
+    <div class="progress-bar progress-bar-striped progress-bar-animated bg-primary" 
+         role="progressbar" style="width: 80%">
+      Paso 4: Conectividad e Infraestructura (80%)
+    </div>
+  </div>
+
+  <div class="card shadow-sm">
+    
+    <div class="card-header bg-white py-3">
+      <h4 class="titulo-azul mb-1">Conectividad</h4>
+      <small class="subtitulo-negro">
+        Detalle de la infraestructura de red y adquisición de equipos de la <strong>institución</strong>
+      </small>
+    </div>
+
+    <div class="card-body">
+      <h5 class="titulo-azul mb-1 mt-2"><i class="bi bi-bag-check-fill me-2"></i>1. Tipo de Adquisición</h5>
+      <p class="descripcion-inter">Especifique cómo fueron adquiridos los equipos reportados</p>
+
+      <div class="row g-3 mb-4">
+        <div class="col-md-3" *ngFor="let item of catalogos.adquisiciones">
+          <label class="form-label fw-bold">{{ item.tipo }}</label>
+          <input type="number" class="form-control" min="0" placeholder="0"
+                 [(ngModel)]="datos.adquisicion[item.id]"
+                 (change)="calcularTotalAdquisicion()">
+        </div>
+        
+        <div class="col-md-3">
+          <label class="form-label fw-bold text-secondary">TOTAL ADQUISICIÓN</label>
+          <input type="number" class="form-control fw-bold bg-light text-primary" 
+                 [value]="datos.totalAdquisicion" readonly>
+        </div>
+      </div>
+
+      <hr>
+
+      <h5 class="titulo-azul mb-1 mt-4"><i class="bi bi-diagram-3-fill me-2"></i>2. Conectividad de Red Local</h5>
+      <p class="descripcion-inter">De las computadoras operativas, indique su estado de conexión:</p>
+
+      <div class="row g-3 mb-4">
+        <div class="col-md-6">
+          <label class="form-label fw-bold">Conectadas a una Red Local (LAN) con Internet</label>
+          <div class="input-group">
+            <span class="input-group-text bg-light text-primary"><i class="bi bi-wifi"></i></span>
+            <input type="number" class="form-control" placeholder="0" [(ngModel)]="datos.conInternet">
+          </div>
+        </div>
+        <div class="col-md-6">
+          <label class="form-label fw-bold">Sin Acceso a Internet</label>
+          <div class="input-group">
+            <span class="input-group-text bg-light text-danger"><i class="bi bi-wifi-off"></i></span>
+            <input type="number" class="form-control" placeholder="0" [(ngModel)]="datos.sinInternet">
+          </div>
+        </div>
+      </div>
+
+      <hr>
+
+      <h5 class="titulo-azul mb-1 mt-4"><i class="bi bi-broadcast me-2"></i>3. Medio de Conexión a Internet</h5>
+      <p class="descripcion-inter">Seleccione los medios utilizados por la institución</p>
+
+      <div class="row mb-4 ps-2"> 
+        <div class="col-md-4 mb-2" *ngFor="let item of catalogos.medios">
+          <div class="form-check"> 
+            <input class="form-check-input" type="checkbox" 
+                   [(ngModel)]="datos.mediosSeleccionados[item.id]"
+                   [id]="'medio_' + item.id"
+                   style="cursor: pointer; width: 1.2em; height: 1.2em;">
+            <label class="form-check-label ms-2" [for]="'medio_' + item.id" style="cursor: pointer;">
+              {{ item.medio }}
+            </label>
+          </div>
+        </div>
+      </div>
+
+      <hr>
+
+      <h5 class="titulo-azul mb-1 mt-4"><i class="bi bi-speedometer2 me-2"></i>4. Velocidad de Conexión</h5>
+      <p class="descripcion-inter">Rangos de velocidad contratados</p>
+
+      <div class="row mb-4 ps-2">
+        <div class="col-md-4 mb-2" *ngFor="let item of catalogos.velocidades">
+          <div class="form-check">
+            <input class="form-check-input" type="checkbox" 
+                   [(ngModel)]="datos.velocidadesSeleccionadas[item.id]"
+                   [id]="'vel_' + item.id"
+                   style="cursor: pointer; width: 1.2em; height: 1.2em;">
+            <label class="form-check-label ms-2" [for]="'vel_' + item.id" style="cursor: pointer;">
+              {{ item.rango }}
+            </label>
+          </div>
+        </div>
+      </div>
+
+      <div class="d-flex justify-content-end mt-5">
+        <button class="btn btn-azul-inst btn-lg px-5" (click)="guardar()">
+          <i class="bi bi-check-circle-fill me-2"></i> Guardar y continuar
+        </button>
+      </div>
+
+    </div>
+  </div>
+</div>

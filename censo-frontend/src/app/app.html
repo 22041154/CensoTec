@@ -1,0 +1,14 @@
+<nav *ngIf="mostrarHeader()" class="navbar navbar-dark bg-primary fixed-top shadow">
+  <div class="container-fluid">
+    <span class="navbar-brand mb-0 h1"> Anexo Tecnologías de la información</span>
+    <div class="d-flex ms-auto">
+      <button class="btn btn-outline-danger btn-sm" (click)="cerrarSesion()">
+        <i class="bi bi-box-arrow-left"></i> Salir del Formulario
+      </button>
+    </div>
+  </div>
+</nav>
+
+<div class="container">
+  <router-outlet></router-outlet>
+</div>

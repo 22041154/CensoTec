@@ -1,0 +1,41 @@
+<div class="login-container">
+  
+  <div class="login-card">
+    
+    <img src="https://i.postimg.cc/kX4cYgnm/logo.png" alt="Prueba" class="logo-institucion">
+
+    <h3>INICIAR SESIÓN</h3>
+
+    <form (ngSubmit)="ingresar()">
+      
+      <div class="input-group mb-4">
+        <span class="input-group-text">
+          <i class="bi bi-person-fill icono-input"></i>
+        </span>
+        <input type="text" class="form-control" placeholder="Usuario" 
+               [(ngModel)]="credenciales.usuario" name="usuario" required>
+      </div>
+
+      <div class="input-group mb-4">
+        <span class="input-group-text">
+          <i class="bi bi-lock-fill icono-input"></i>
+        </span>
+        <input type="password" class="form-control" placeholder="Contraseña" 
+               [(ngModel)]="credenciales.contrasena" name="password" required>
+      </div>
+
+      <div *ngIf="error" class="alert alert-danger py-2 mb-3 rounded-pill" role="alert">
+        <small><i class="bi bi-exclamation-circle-fill"></i> {{ mensajeError }}</small>
+      </div>
+
+      <div class="d-grid">
+        <button type="submit" class="btn btn-guinda" [disabled]="cargando">
+          <span *ngIf="cargando" class="spinner-border spinner-border-sm me-2"></span>
+          {{ cargando ? 'Validando...' : 'INGRESAR' }}
+        </button>
+      </div>
+
+    </form>
+  </div>
+
+</div>

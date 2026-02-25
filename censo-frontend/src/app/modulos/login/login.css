@@ -1,0 +1,86 @@
+.login-container {
+  background-color: #621231; 
+  width: 100%;
+  min-height: 100vh;
+  
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  
+  
+  position: absolute; 
+  top: 0;
+  left: 0;
+  margin: 0;
+  padding: 0;
+}
+
+/* TARJETA BLANCA FLOTANTE */
+.login-card {
+  background-color: white;
+  border-radius: 25px; 
+  padding: 3rem 2.5rem;
+  width: 90%;
+  max-width: 380px; 
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4); 
+  text-align: center;
+}
+
+.logo-institucion {
+  width: 190px; 
+  height: auto;
+  margin-bottom: 1rem;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* TEXTO "INICIAR SESIÓN" */
+h3 {
+  color: #621231;
+  font-weight: 800; 
+  letter-spacing: 1px;
+  margin-bottom: 2rem;
+  font-size: 1.4rem;
+}
+
+.input-group-text {
+  background-color: #f8f9fa;
+  border: 1px solid #ced4da;
+  border-right: none;
+  border-radius: 50px 0 0 50px; 
+  padding-left: 20px;
+}
+
+.form-control {
+  border: 1px solid #ced4da;
+  border-left: none;
+  border-radius: 0 50px 50px 0;
+  padding: 12px;
+}
+
+.form-control:focus {
+  box-shadow: none;
+  border-color: #621231;
+}
+
+.icono-input {
+  color: #621231;
+  font-size: 1.2rem;
+}
+
+.btn-guinda {
+  background-color: #1F3564;
+  color: white;
+  border-radius: 50px;
+  padding: 12px;
+  font-weight: bold;
+  letter-spacing: 1px;
+  transition: transform 0.2s;
+  margin-top: 10px;
+}
+
+.btn-guinda:hover {
+  background-color: #4a0d24;
+  transform: scale(1.02);
+}

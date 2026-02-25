@@ -1,0 +1,115 @@
+<div class="container mt-4 mb-5">
+  
+  <div class="progress mb-4" style="height: 25px;">
+    <div class="progress-bar progress-bar-striped progress-bar-animated bg-primary" 
+         role="progressbar" style="width: 100%">
+      Paso 5: Servicios y Periféricos (100%)
+    </div>
+  </div>
+
+  <div class="card shadow-sm">
+    
+    <div class="card-header bg-white py-3">
+      <h4 class="titulo-azul mb-1">Servicios y Periféricos</h4>
+      <small class="subtitulo-negro">
+        Detalles sobre impresión, conectividad pública y servidores de la <strong>institución</strong>
+      </small>
+    </div>
+
+    <div class="card-body">
+      
+      <h5 class="titulo-azul mb-1 mt-2"><i class="bi bi-printer-fill me-2"></i>1. Impresoras</h5>
+      <p class="descripcion-inter">Disponibilidad de servicios de impresión para estudiantes</p>
+
+      <div class="mb-4 ps-2">
+        <div class="form-check form-switch mb-3">
+          <input class="form-check-input" type="checkbox" id="checkImp" 
+                 [(ngModel)]="datos.tieneImpresora" style="cursor: pointer;">
+          <label class="form-check-label fw-bold" for="checkImp" style="cursor: pointer;">
+            ¿El aula o laboratorio tiene impresora disponible?
+          </label>
+        </div>
+
+        <div class="ms-4 p-3 rounded" style="background-color: #f8f9fa; border-left: 3px solid #1F3564;" 
+             *ngIf="datos.tieneImpresora">
+          <label class="form-label mb-2 fw-bold text-secondary">¿Las impresiones son gratuitas?</label>
+          <div>
+            <div class="form-check form-check-inline">
+              <input class="form-check-input" type="radio" name="gratis" [value]="true" 
+                     [(ngModel)]="datos.impresionesGratuitas" id="impGratis">
+              <label class="form-check-label" for="impGratis">Sí, son gratuitas</label>
+            </div>
+            <div class="form-check form-check-inline">
+              <input class="form-check-input" type="radio" name="gratis" [value]="false" 
+                     [(ngModel)]="datos.impresionesGratuitas" id="impCosto">
+              <label class="form-check-label" for="impCosto">No, tienen costo</label>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <hr>
+
+      <h5 class="titulo-azul mb-1 mt-4"><i class="bi bi-router-fill me-2"></i>2. Wi-Fi Público</h5>
+      <p class="descripcion-inter">Acceso inalámbrico en áreas comunes</p>
+
+      <div class="mb-4 ps-2">
+        <div class="form-check form-switch mb-3">
+          <input class="form-check-input" type="checkbox" id="checkWifi" 
+                 [(ngModel)]="datos.tieneWifiPublico" style="cursor: pointer;">
+          <label class="form-check-label fw-bold" for="checkWifi" style="cursor: pointer;">
+            ¿Cuenta con Wi-Fi en sus áreas públicas?
+          </label>
+        </div>
+
+        <div class="ms-4 p-3 rounded" style="background-color: #f8f9fa; border-left: 3px solid #1F3564;"
+             *ngIf="datos.tieneWifiPublico">
+          <label class="form-label fw-bold text-secondary mb-2">¿Quiénes tienen acceso?</label>
+          <div class="row">
+            <div class="col-md-4" *ngFor="let p of perfilesWifi">
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" 
+                       [(ngModel)]="datos.perfilesSeleccionados[p.id]"
+                       [id]="'perfil_' + p.id">
+                <label class="form-check-label" [for]="'perfil_' + p.id">
+                  {{ p.perfil }}
+                </label>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <hr>
+
+      <h5 class="titulo-azul mb-1 mt-4"><i class="bi bi-hdd-rack-fill me-2"></i>3. Servidores</h5>
+      <p class="descripcion-inter">Infraestructura propia de alojamiento de datos</p>
+
+      <div class="mb-4 ps-2">
+        <div class="form-check form-switch mb-3">
+          <input class="form-check-input" type="checkbox" id="checkServer" 
+                 [(ngModel)]="datos.tieneServidores" style="cursor: pointer;">
+          <label class="form-check-label fw-bold" for="checkServer" style="cursor: pointer;">
+            ¿La unidad académica tiene servidores propios?
+          </label>
+        </div>
+
+        <div class="ms-4 p-3 rounded" style="background-color: #f8f9fa; border-left: 3px solid #1F3564;"
+             *ngIf="datos.tieneServidores">
+          <label class="form-label fw-bold text-secondary">Cantidad de Servidores</label>
+          <div class="col-md-4">
+            <input type="number" class="form-control" min="1" placeholder="Ej. 1" 
+                   [(ngModel)]="datos.cantidadServidores">
+          </div>
+        </div>
+      </div>
+
+      <div class="d-flex justify-content-end mt-5">
+        <button class="btn btn-azul-inst btn-lg px-5" (click)="guardar()">
+          <i class="bi bi-save2-fill me-2"></i> Guardar y Finalizar
+        </button>
+      </div>
+
+    </div>
+  </div>
+</div>
