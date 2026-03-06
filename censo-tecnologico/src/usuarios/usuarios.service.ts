@@ -1,15 +1,24 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, OnModuleInit } from '@nestjs/common'; 
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Usuario } from 'src/entities/Usuario.entity';
 import * as bcrypt from 'bcrypt';
 
 @Injectable()
-export class UsuariosService {
+export class UsuariosService implements OnModuleInit { 
   constructor(
     @InjectRepository(Usuario)
     private usuarioRepository: Repository<Usuario>,
   ) {}
+
+  async onModuleInit() {
+    const adminUsuario = 'admin';
+    const adminPassword = 'pass123'; 
+    const adminExiste = await this.encontrarPorNombre(adminUsuario);
+    if (!adminExiste) {
+      await this.crear(adminUsuario, adminPassword, 'admin');
+    }
+  }
 
   async crear(
     usuario: string,
