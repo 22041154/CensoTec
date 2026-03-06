@@ -1,14 +1,14 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router'; // Añadido RouterLink
 import { CensoApiService } from '../../services/censo-api'; 
 import { AuthService } from '../../services/auth.service'; 
 
 @Component({
   selector: 'app-inicio',
   standalone: true,
-  imports: [CommonModule, FormsModule], // Añade FormsModule aquí
+  imports: [CommonModule, FormsModule, RouterLink], // Añadido RouterLink aquí
   templateUrl: './inicio.html',
   styleUrls: ['./inicio.css']
 })
@@ -22,8 +22,9 @@ export class Inicio implements OnInit {
   nombrePaso = 'Cargando...';
   rutaDestino = '/paso1';
   datosGuardados: any = null;
+  esAdmin: boolean = false; // Variable para el acceso seguro
 
-  // NUEVAS VARIABLES
+  // VARIABLES DE DEPARTAMENTO
   departamentoSeleccionado: string = '';
   departamentoInicialGuardado: string = '';
   departamentoBloqueado: boolean = false;
@@ -31,8 +32,10 @@ export class Inicio implements OnInit {
   departamentos: string[] = [];
 
   ngOnInit() {
+    this.verificarRol(); // Comprobar si es admin para el botón del CMS
     this.cargarDepartamentosDisponibles();
     this.verificarProgreso();
+    
     const tempDept = localStorage.getItem('temp_departamento');
     const tieneCenso = !!localStorage.getItem('id_censo_actual');
 
@@ -43,30 +46,48 @@ export class Inicio implements OnInit {
     }
   }
 
+  verificarRol() {
+  const rol = this.authService.obtenerRol();
+  console.log('Rol detectado:', rol);
+  this.esAdmin = (rol === 'admin');
+}
+
   cargarDepartamentosDisponibles() {
-    this.censoService.obtenerDepartamentosDisponibles().subscribe({
-      next: (departamentos) => {
-        // Si el usuario ya tiene un departamento seleccionado, incluirlo en la lista
-        if (this.departamentoSeleccionado && !departamentos.includes(this.departamentoSeleccionado)) {
-          this.departamentos = [this.departamentoSeleccionado, ...departamentos].sort();
-        } else {
-          this.departamentos = departamentos;
-        }
-      },
-      error: (err) => {
-        console.error('Error obteniendo departamentos disponibles', err);
-        // En caso de error, asignar todos los departamentos como fallback
-        this.departamentos = [
-          'Sistemas y Computación',
-          'Ingeniería Industrial',
-          'Ciencias Económico-Administrativas',
-          'Ingeniería Eléctrica y Electrónica',
-          'Ingeniería Mecánica',
-          'Ciencias Básicas'
-        ];
-      }
-    });
-  }
+  this.censoService.obtenerDepartamentosDisponibles().subscribe({
+    next: (departamentos) => {
+      // Si el backend ya envía la lista nueva, la usamos
+      this.departamentos = departamentos;
+    },
+    error: (err) => {
+      console.error('Error obteniendo departamentos disponibles', err);
+      // Nueva lista actualizada según tu requerimiento
+      this.departamentos = [
+        '-- Departamentos Académicos --',
+        'Sistemas y Computación',
+        'Ciencias Económico-Administrativo',
+        'Metal-Mecánica',
+        'Química-Bioquímica',
+        'Ciencias Básicas',
+        'Ciencias de la Tierra',
+        'Eléctrica Electrónica',
+        'Ingeniería Industrial',
+        '-- Departamentos Administrativos --',
+        'Centro de Computo',
+        'Recursos Financieros',
+        'Recursos Humanos',
+        'Recursos Materiales y Servicios',
+        'Mantenimiento y Equipo',
+        '-- Departamentos de Planeación y Vinculación --',
+        'Departamento de Comunicación y Difusión',
+        'Departamento de Gestión Tecnológica y Vinculación',
+        'Departamento de Servicios Escolares',
+        'Departamento de Planeación, Programación y Presupuestación',
+        'Centro de Información',
+        'Departamento de Actividades Extraescolares'
+      ];
+    }
+  });
+}
 
   verificarProgreso() {
     this.censoService.obtenerMiProgreso().subscribe({
@@ -77,9 +98,7 @@ export class Inicio implements OnInit {
           if (censo.departamento) {
             this.departamentoSeleccionado = censo.departamento;
             this.departamentoInicialGuardado = censo.departamento;
-            // Si el censo ya tiene departamento guardado en servidor, bloquear selección
             this.departamentoBloqueado = true;
-            // Asegurar que este departamento esté en la lista de opciones
             if (!this.departamentos.includes(censo.departamento)) {
               this.departamentos = [censo.departamento, ...this.departamentos].sort();
             }
@@ -107,17 +126,13 @@ export class Inicio implements OnInit {
       return;
     }
 
-    // Bloquear el botón mientras se procesa
     this.cargandoBtn = true;
 
-    
     if (this.datosGuardados && !this.datosGuardados.departamento) {
-      // Hay censo en progreso pero sin departamento. Guardarlo en el servidor
       this.censoService.actualizarDatos(this.datosGuardados.iddatos, { 
         departamento: this.departamentoSeleccionado 
       }).subscribe({
         next: () => {
-          // marcar como bloqueado para que no puedan cambiarlo después
           this.datosGuardados.departamento = this.departamentoSeleccionado;
           this.departamentoInicialGuardado = this.departamentoSeleccionado;
           this.departamentoBloqueado = true;
@@ -130,30 +145,23 @@ export class Inicio implements OnInit {
         }
       });
     } 
-   
     else if (!this.datosGuardados) {
-      // Nuevo censo: guardar el departamento en localStorage y bloquear
       localStorage.setItem('temp_departamento', this.departamentoSeleccionado);
       this.tempDepartamento = this.departamentoSeleccionado;
       this.departamentoBloqueado = true;
       this.departamentoInicialGuardado = this.departamentoSeleccionado;
       this.router.navigate([this.rutaDestino]);
     }
-    
     else {
-      // Ya tiene departamento guardado, solo navegar
       this.router.navigate([this.rutaDestino]);
     }
   }
 
-  onDepartamentoChange() {
-    // El cambio de departamento se detecta en el template
-  }
+  onDepartamentoChange() { }
 
   cerrarSesion() { this.authService.logout(); }
 
   calcularPasoFaltante(datos: any): { nombre: string, ruta: string } {
-    
     if (datos.tiene_wifi_publico !== null && datos.tiene_wifi_publico !== undefined) {
        return { nombre: 'Ver Resumen Final', ruta: '/resumen' };
     }

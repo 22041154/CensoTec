@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { environment } from '../../environments/environment';
 import { Observable, forkJoin } from 'rxjs';
 import { map } from 'rxjs/operators';
+import id from '@angular/common/locales/extra/id';
 
 @Injectable({
   providedIn: 'root'
@@ -24,6 +25,17 @@ export class CensoApiService {
 
   obtenerDatosEscuela(id: number): Observable<any> {
     return this.http.get<any>(`${this.baseUrl}/datos-escuela/${id}`);
+  }
+    listarUsuarios() {
+    return this.http.get<any[]>(`${this.baseUrl}/usuarios`);
+  }
+
+  registrarUsuario(datos: any) {
+    return this.http.post(`${this.baseUrl}/usuarios/registro`, datos);
+  }
+
+  eliminarUsuario(id: number) {
+    return this.http.delete(`${this.baseUrl}/usuarios/${id}`);
   }
 
   obtenerCatalogos(): Observable<any> {

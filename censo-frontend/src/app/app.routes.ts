@@ -7,6 +7,8 @@ import { DetalleEducativoComponent } from './modulos/detalle-educativo/detalle-e
 import { Conectividad } from './modulos/conectividad/conectividad';
 import { ServiciosComponent } from './modulos/servicios/servicios';
 import { Resumen } from './modulos/resumen/resumen';
+import { AdminUsuariosComponent } from './modulos/admin-usuarios/admin-usuarios';
+import { AdminGuard } from './guards/admin.guard';
 
 export const routes: Routes = [
   { path: 'login', component: LoginComponent },
@@ -18,6 +20,7 @@ export const routes: Routes = [
   { path: 'conectividad', component: Conectividad },
   { path: 'servicios', component: ServiciosComponent },
   { path: 'resumen', component: Resumen },
+  { path: 'admin/usuarios', component: AdminUsuariosComponent, canActivate: [AdminGuard] },
 
   { path: '', redirectTo: 'login', pathMatch: 'full' },
   { path: '**', redirectTo: 'login' }

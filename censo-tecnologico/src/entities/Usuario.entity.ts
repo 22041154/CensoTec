@@ -11,4 +11,7 @@ export class Usuario {
 
   @Column({ type: 'varchar' })
   contrasena: string; 
+
+  @Column({ type: 'enum', enum: ['admin', 'user'], default: 'user' })
+  role: 'admin' | 'user';
 }

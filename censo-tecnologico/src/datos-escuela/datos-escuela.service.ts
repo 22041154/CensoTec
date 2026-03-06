@@ -52,6 +52,7 @@ export class DatosEscuelaService {
       // Relaciones de pasos posteriores
       const medios = datos.mediosConexionSeleccionados;
       const velocidades = datos.velocidadesInternetSeleccionadas;
+      const perfiles = datos.perfilesWifiSeleccionados;
       const conteosAdquisicion = datos.conteosAdquisicion;
       
       // Separar datos normales de relaciones
@@ -63,6 +64,7 @@ export class DatosEscuelaService {
       delete datosSimples.conteosAntiguedad;
       delete datosSimples.mediosConexionSeleccionados;
       delete datosSimples.velocidadesInternetSeleccionadas;
+      delete datosSimples.perfilesWifiSeleccionados;
       delete datosSimples.conteosAdquisicion;
 
       // Actualizar datos simples
@@ -132,11 +134,11 @@ export class DatosEscuelaService {
         await this.conteoAntiguedadRepo.insert(nuevosConteos);
       }
 
-      // Actualizar medios y velocidades si existen
-      if (medios || velocidades) {
+      // Actualizar medios, velocidades y perfiles si existen
+      if (medios || velocidades || perfiles) {
         const registroActualizado = await this.repo.findOne({ 
           where: { iddatos: id },
-          relations: ['mediosConexionSeleccionados', 'velocidadesInternetSeleccionadas']
+          relations: ['mediosConexionSeleccionados', 'velocidadesInternetSeleccionadas', 'perfilesWifiSeleccionados']
         });
 
         if (registroActualizado) {
@@ -145,6 +147,9 @@ export class DatosEscuelaService {
           }
           if (velocidades) {
             registroActualizado.velocidadesInternetSeleccionadas = velocidades;
+          }
+          if (perfiles) {
+            registroActualizado.perfilesWifiSeleccionados = perfiles;
           }
           await this.repo.save(registroActualizado);
         }
@@ -205,31 +210,52 @@ export class DatosEscuelaService {
       .getOne();
   }
 
-  async obtenerDepartamentosDisponibles() {
-    const todosLosDepartamentos = [
-      'Sistemas y Computación',
-      'Ingeniería Industrial',
-      'Ciencias Económico-Administrativas',
-      'Ingeniería Eléctrica y Electrónica',
-      'Ingeniería Mecánica',
-      'Ciencias Básicas'
-    ];
+  // src/datos-escuela/datos-escuela.service.ts
 
-    const departamentosEnUso = await this.repo
-      .createQueryBuilder('datos')
-      .select('DISTINCT datos.departamento', 'departamento')
-      .where('datos.departamento IS NOT NULL')
-      .getRawMany();
+async obtenerDepartamentosDisponibles() {
+  // 1. Definimos la nueva lista estructurada con encabezados
+  const todosLosDepartamentos = [
+    '-- Departamentos Académicos --',
+    'Sistemas y Computación',
+    'Ciencias Económico-Administrativo',
+    'Metal-Mecánica',
+    'Química-Bioquímica',
+    'Ciencias Básicas',
+    'Ciencias de la Tierra',
+    'Eléctrica Electrónica',
+    'Ingeniería Industrial',
+    '-- Departamentos Administrativos --',
+    'Centro de Computo',
+    'Recursos Financieros',
+    'Recursos Humanos',
+    'Recursos Materiales y Servicios',
+    'Mantenimiento y Equipo',
+    '-- Departamentos de Planeación y Vinculación --',
+    'Departamento de Comunicación y Difusión',
+    'Departamento de Gestión Tecnológica y Vinculación',
+    'Departamento de Servicios Escolares',
+    'Departamento de Planeación, Programación y Presupuestación',
+    'Centro de Información',
+    'Departamento de Actividades Extraescolares'
+  ];
 
-    // Extraer los nombres de departamentos en uso
-    const departamentosEnUsoNombres = departamentosEnUso.map(d => d.departamento);
+  // 2. Consultamos qué departamentos ya tienen un censo registrado
+  const departamentosEnUso = await this.repo
+    .createQueryBuilder('datos')
+    .select('DISTINCT datos.departamento', 'departamento')
+    .where('datos.departamento IS NOT NULL')
+    .getRawMany();
 
-    // Retornar solo los departamentos disponibles (no en uso)
-    const departamentosDisponibles = todosLosDepartamentos.filter(
-      depto => !departamentosEnUsoNombres.includes(depto)
-    );
+  const departamentosEnUsoNombres = departamentosEnUso.map(d => d.departamento);
 
-    return departamentosDisponibles;
-  }
+  // 3. Filtramos la lista para no mostrar departamentos que ya terminaron su censo
+  // PERO mantenemos los encabezados (los que empiezan con --) siempre visibles
+  const departamentosDisponibles = todosLosDepartamentos.filter(depto => {
+    if (depto.startsWith('--')) return true; // Mantener títulos siempre
+    return !departamentosEnUsoNombres.includes(depto); // Quitar si ya está en uso
+  });
+
+  return departamentosDisponibles;
+}
 
 }

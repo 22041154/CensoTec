@@ -21,12 +21,19 @@
           [(ngModel)]="departamentoSeleccionado"
           (change)="onDepartamentoChange()"
           [disabled]="datosGuardados?.departamento || departamentoBloqueado">
+          
           <option *ngIf="!departamentoSeleccionado" value="" disabled selected>-- Selecciona uno --</option>
-          <option *ngFor="let depto of departamentos" [value]="depto">
+          
+          <option 
+            *ngFor="let depto of departamentos" 
+            [value]="depto"
+            [disabled]="depto.startsWith('--')"
+            [style.font-weight]="depto.startsWith('--') ? 'bold' : 'normal'"
+            [style.background-color]="depto.startsWith('--') ? '#f8f9fa' : 'white'"
+            [style.color]="depto.startsWith('--') ? '#621231' : 'black'">
             {{ depto }}
           </option>
         </select>
-        
 
         <div *ngIf="departamentoBloqueado" class="form-text text-success">
           <i class="bi bi-lock-fill"></i> Has seleccionado <strong>{{ departamentoSeleccionado }}</strong> para este censo y no puedes cambiarlo.
@@ -36,6 +43,12 @@
       <button class="btn btn-azul mb-3 w-100" (click)="continuar()" [disabled]="cargandoBtn">
         {{ nombrePaso }}
       </button>
+
+      <div *ngIf="esAdmin" class="mb-3">
+        <button class="btn btn-warning w-100 fw-bold" routerLink="/admin/usuarios">
+          <i class="bi bi-shield-lock-fill"></i> Panel de Administración
+        </button>
+      </div>
 
       <button class="btn btn-outline-guinda w-100" (click)="cerrarSesion()">
         <i class="bi bi-box-arrow-left"></i> Cerrar Sesión

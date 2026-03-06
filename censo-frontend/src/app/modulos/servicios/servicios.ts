@@ -48,35 +48,44 @@ export class ServiciosComponent implements OnInit {
   }
 
   guardar() {
-    if (!this.idActual) return;
+  if (!this.idActual) return;
 
-    if (this.datos.tieneServidores && this.datos.cantidadServidores <= 0) {
-      alert(' Si tiene servidores, la cantidad debe ser mayor a 0.');
-      return;
-    }
-
-    const payload = {
-      tiene_impresora_estudiantes: this.datos.tieneImpresora,
-      impresiones_gratuitas: this.datos.tieneImpresora ? this.datos.impresionesGratuitas : false, 
-
-      tiene_wifi_publico: this.datos.tieneWifiPublico,
-      perfilesWifiSeleccionados: this.datos.tieneWifiPublico 
-        ? this.perfilesWifi
-            .filter(p => this.datos.perfilesSeleccionados[p.id])
-            .map(p => ({ id: p.id }))
-        : [], 
-
-      tiene_servidores: this.datos.tieneServidores,
-      cantidad_servidores: this.datos.tieneServidores ? this.datos.cantidadServidores : 0
-    };
-
-    console.log('Enviando Paso 5:', payload);
-
-    this.censoService.actualizarDatos(this.idActual, payload).subscribe({
-      next: () => {
-        this.router.navigate(['/resumen']);
-      },
-      error: (e) => alert(' Error al guardar.')
-    });
+  // Validación de lógica de negocio
+  if (this.datos.tieneServidores && this.datos.cantidadServidores <= 0) {
+    alert('Si tiene servidores, la cantidad debe ser mayor a 0.');
+    return;
   }
-}
+
+  const payload = {
+    // Es vital enviar el ID para que TypeORM sepa que es una actualización
+    iddatos: this.idActual, 
+
+    // Mapeo correcto de nombres según la entidad DatosEscuela
+    tiene_impresora_estudiantes: this.datos.tieneImpresora,
+    impresiones_gratuitas: this.datos.tieneImpresora ? this.datos.impresionesGratuitas : false, 
+
+    tiene_wifi_publico: this.datos.tieneWifiPublico,
+    
+    // CORRECCIÓN CLAVE: El backend espera 'idperfil' para la relación ManyToMany
+    perfilesWifiSeleccionados: this.datos.tieneWifiPublico 
+      ? this.perfilesWifi
+          .filter(p => this.datos.perfilesSeleccionados[p.idperfil]) 
+          .map(p => ({ idperfil: p.idperfil })) 
+      : [], 
+
+    tiene_servidores: this.datos.tieneServidores,
+    cantidad_servidores: this.datos.tieneServidores ? this.datos.cantidadServidores : 0
+  };
+
+  console.log('Enviando Paso 5:', payload);
+
+  this.censoService.actualizarDatos(this.idActual, payload).subscribe({
+    next: () => {
+      this.router.navigate(['/resumen']);
+    },
+    error: (e) => {
+      console.error('Error detallado:', e);
+      alert('Error al guardar los datos del Paso 5. Revisa la consola.');
+    }
+  });
+}}

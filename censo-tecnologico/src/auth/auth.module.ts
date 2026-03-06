@@ -5,6 +5,7 @@ import { PassportModule } from '@nestjs/passport';
 import { JwtModule } from '@nestjs/jwt';
 import { AuthController } from './auth.controller';
 import { JwtStrategy } from './jwt.strategy';
+import { AdminGuard } from './admin.guard';
 
 @Module({
   imports: [
@@ -12,10 +13,10 @@ import { JwtStrategy } from './jwt.strategy';
     PassportModule,
     JwtModule.register({
       secret: 'CLAVE_SECRETA_PARA_FIRMAR_TOKENS', 
-      signOptions: { expiresIn: '1h' }, 
+      signOptions: { expiresIn: '10min' }, 
     }),
   ],
-  providers: [AuthService, JwtStrategy],
+  providers: [AuthService, JwtStrategy, AdminGuard],
   controllers: [AuthController],
   exports: [AuthService],
 })
