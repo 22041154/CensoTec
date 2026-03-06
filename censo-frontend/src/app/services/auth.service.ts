@@ -39,12 +39,11 @@ export class AuthService {
     try {
       // Decodificamos el payload del JWT
       const payload = JSON.parse(atob(token.split('.')[1]));
-      return payload.sub; // 'sub' contiene el idusuario
+      return payload.id; // 'id' contiene el idusuario
     } catch (e) {
       return null;
     }
   }
-
   getUserRole(): string | null {
     const token = localStorage.getItem('token');
     if (!token) return null;

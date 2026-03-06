@@ -24,8 +24,8 @@ export class AdminUsuariosComponent implements OnInit {
   obtenerUsuarios() {
     this.cargando = true;
     this.censoService.listarUsuarios().subscribe({
-      next: (res) => {
-        this.usuarios = res;
+      next: (res: any) => {
+        this.usuarios = res.data?.attributes?.contenido || res.data || res.usuarios || res;
         this.cargando = false;
       },
       error: () => this.cargando = false
